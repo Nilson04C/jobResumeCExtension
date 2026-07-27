@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Minimal Manifest",
+  "version": "1.0.1",
+  "description": "A basic example extension with only required keys",
+  "icons": {
+    "48": "images/icon-48.png"
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "content-script.js"
+      ],
+      
+      "matches": [
+        "https://*.linkedin.com/*"
+      ]
+    }
+  ]
+    
+}
