@@ -1,3 +1,38 @@
+// Palavras a pesquisar na descrição
+const keywords = [
+  "experience",
+  "hands-on",
+  "strong understanding",
+  "knowledge",
+  "bachelor",
+  "master",
+  "msc",
+  "bsc",
+  "phd",
+  "professional experience",
+  "proven experience",
+  "demonstrated experience",
+  "track record",
+  "entry level",
+  "entry-level",
+  "junior",
+  "senior",
+  "mid-level",
+  "degree in",
+  "diploma",
+  "certification",
+  "certified",
+  "proficient in",
+  "proficiency in",
+  "familiarity with",
+  "solid understanding",
+  "deep understanding",
+  "expertise in",
+  "background in"
+];
+
+
+
 // ===== Ponto de entrada =====
 console.log("content script a correr");
 
@@ -54,7 +89,18 @@ function processText() {
   descriptionText  = getJobDescriptionText();
 
   if (descriptionText  && descriptionText .trim() !== "") {
+
     console.log(descriptionText );
+
+    let paragraphs = descriptionText.split(/\n|; |\. /);
+    let expParagraphs = paragraphs.filter(paragraph =>{
+
+      const lowerParagraph = paragraph.toLowerCase();
+      return keywords.some(keyword => lowerParagraph.includes(keyword))
+    } )
+
+    console.log("\n paragrafos de experiencia",expParagraphs)
+
   } else {
     console.log("Ainda não carregou / não encontrado.");
   }
