@@ -16,6 +16,12 @@
         "https://*.linkedin.com/*"
       ]
     }
-  ]
+  ],
+
+  "action": {
+    "default_icon": {},
+    "default_title": "Click Me",
+    "default_popup": "popup.html"
+  }
     
 }

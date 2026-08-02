@@ -3,20 +3,24 @@ const keywords = [
   "experience",
   "hands-on",
   "strong understanding",
+  "good understanding",
   "knowledge",
-  "bachelor",
-  "master",
+  "bachelor's", // Mudar para bachelor's
+  "master's", // Mudar para master's
+  "degree in",
+  "university degree",
   "msc",
   "bsc",
   "phd",
   "professional experience",
   "proven experience",
+  "proven ability",
   "demonstrated experience",
   "track record",
   "entry level",
   "entry-level",
-  "junior",
-  "senior",
+  "junior", // to remove
+  "senior", // to remove
   "mid-level",
   "degree in",
   "diploma",
@@ -31,12 +35,26 @@ const keywords = [
   "background in"
 ];
 
+const observer = new MutationObserver(processText);
+
+const maxLength = 150; // ignora linhas mais longas que isto
+
+let descriptionText;
+
+let lastUrl = location.href;
+
+// ===== monitorizar mudança no url =====
+setInterval(() => {
+  if (location.href !== lastUrl) {
+    lastUrl = location.href;
+    startDetection();
+  }
+}, 1000);
 
 
 // ===== Ponto de entrada =====
 console.log("content script a correr");
 
-let descriptionText  = getJobDescriptionText();
 startDetection();
 
 
@@ -76,14 +94,32 @@ function getJobDescriptionText() {
 }
 
 
+// ===== Filtragem de experiência =====
+
+function hasKeywordMatch(paragraph) {
+  const lower = paragraph.toLowerCase();
+  return keywords.some(keyword => {
+    const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+    return regex.test(lower);
+  });
+}
+
+// ===== Filtragem de experiência =====
+
+function hasYearsMatch(paragraph) {
+  const regex = /\d+\+?\s*years?\s+(of\s+)?[\w\s-]{0,20}experience/i;
+  return regex.test(paragraph);
+}
+
+
 // ===== Deteção de mudanças (observer) =====
 
 function startDetection() {
-  processText();
 
-  const observer = new MutationObserver(processText);
   observer.observe(document.body, { childList: true, subtree: true });
+  processText();
 }
+
 
 function processText() {
   descriptionText  = getJobDescriptionText();
@@ -91,15 +127,23 @@ function processText() {
   if (descriptionText  && descriptionText .trim() !== "") {
 
     console.log(descriptionText );
+    
+    observer.disconnect();
 
     let paragraphs = descriptionText.split(/\n|; |\. /);
+
+    let yearsExpParagraphs = paragraphs.filter(p => hasYearsMatch(p.trim()));
+
     let expParagraphs = paragraphs.filter(paragraph =>{
 
-      const lowerParagraph = paragraph.toLowerCase();
-      return keywords.some(keyword => lowerParagraph.includes(keyword))
+      const trimmed = paragraph.trim();
+      return trimmed.length <= maxLength 
+          && hasKeywordMatch(trimmed)
+          && !hasYearsMatch(trimmed);
     } )
 
-    console.log("\n paragrafos de experiencia",expParagraphs)
+    console.log("anos de experiência (alta confiança):", yearsExpParagraphs);
+    console.log("outras menções relevantes:", expParagraphs);
 
   } else {
     console.log("Ainda não carregou / não encontrado.");
