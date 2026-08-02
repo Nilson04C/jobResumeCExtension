@@ -98,16 +98,19 @@ function getJobDescriptionText() {
 
   if (!container) return null;
 
-  // limpa texto "Sobre a Vaga"
+  // limpar texto "Sobre a Vaga"
   const clone = container.cloneNode(true);
   clone.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => heading.remove());
 
-  // adiciona quebra de linha a seguir a cada elemento de bloco
+  // adicionar quebra de linha a seguir a cada elemento de bloco
   clone.querySelectorAll('p, li, div, br').forEach(el => {
     el.insertAdjacentText('afterend', '\n');
   });
 
-  // limpa espaços/linhas em excesso
+  // remover "... mais" das descrições do linkedin
+  clone.querySelectorAll('button').forEach(btn => btn.remove());
+
+  // limpar espaços/linhas em excesso
   return clone.textContent
     .split('\n')
     .map(linha => linha.trim())
@@ -167,7 +170,68 @@ function processText() {
     console.log("anos de experiência (alta confiança):", yearsExpParagraphs);
     console.log("outras menções relevantes:", expParagraphs);
 
+    let summaryText = "";
+
+    const yearsText = yearsExpParagraphs.length > 0 
+      ? yearsExpParagraphs.join('\n') 
+      : "nothing found";
+
+    summaryText += "years of experience:\n" + yearsText + "\n\n";
+
+    const otherText = expParagraphs.length > 0 
+      ? expParagraphs.join('\n') 
+      : "nothing found";
+
+    summaryText += "May Also Be Relevant:\n" + otherText;
+
+    insertSummary(summaryText);
+
   } else {
     console.log("Ainda não carregou / não encontrado.");
   }
+}
+
+
+// ===== Adicionar o resumo à página =====
+function insertSummary(text) {
+  const container = getJobDescriptionElement();
+  if (!container) return;
+
+  const existing = document.getElementById('my-ext-resume');
+  if (existing) existing.remove();
+
+  const summaryBox = document.createElement('div');
+  summaryBox.id = 'my-ext-resume';
+
+  summaryBox.style.cssText = `
+    all: initial;
+    display: block;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #1a1a1a;
+    background-color: #f3f9ff;
+    border: 1px solid #cfe3fa;
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    white-space: pre-line;
+  `;
+
+  const label = document.createElement('div');
+  label.textContent = "Extension-generated summary";
+  label.style.cssText = `
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 6px;
+    font-style: italic;
+  `;
+
+  const content = document.createElement('div');
+  content.textContent = text;
+
+  summaryBox.appendChild(label);
+  summaryBox.appendChild(content);
+
+  container.insertAdjacentElement('beforebegin', summaryBox);
 }
