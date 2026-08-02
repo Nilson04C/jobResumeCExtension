@@ -13,7 +13,9 @@
       ],
       
       "matches": [
-        "https://*.linkedin.com/*"
+        "https://*.linkedin.com/*",
+        "https://*.indeed.com/*",
+        "https://www.itjobs.pt/*"
       ]
     }
   ],

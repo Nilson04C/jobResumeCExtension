@@ -52,24 +52,46 @@ setInterval(() => {
 }, 1000);
 
 
+
 // ===== Ponto de entrada =====
 console.log("content script a correr");
 
 startDetection();
 
 
-// ===== Extração de dados =====
 
+// ===== Extração de dados =====
 function getJobDescriptionElement() {
+  const hostname = window.location.hostname;
+
+  if (hostname.includes('linkedin.com')) {
+    return getLinkedInDescriptionElement();
+  } else if (hostname.includes('indeed.com')) {
+    return getIndeedDescriptionElement();
+  } else if (hostname.includes('itjobs.pt')) {
+    return getItJobsDescriptionElement();
+  }
+
+  return null;
+}
+
+function getLinkedInDescriptionElement() {
+
   let el = document.getElementById('job-details');
   if (el) return el;
-
   el = document.querySelector('.jobs-description__content');
   if (el) return el;
-
   el = document.querySelector('[data-sdui-component="com.linkedin.sdui.generated.jobseeker.dsl.impl.aboutTheJob"]');
-  return el; // null se nenhum dos três existir
+  return el;
 }
+
+function getIndeedDescriptionElement() {
+  // a preencher depois de inspecionares o Indeed
+  return null;
+}
+
+
+
 
 function getJobDescriptionText() {
   const container = getJobDescriptionElement();
