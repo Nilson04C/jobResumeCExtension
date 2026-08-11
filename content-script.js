@@ -1,12 +1,12 @@
 // Palavras a pesquisar na descrição
-const keywords = [
+const keywordsEN = [
   "experience",
   "hands-on",
   "strong understanding",
   "good understanding",
   "knowledge",
-  "bachelor's", // Mudar para bachelor's
-  "master's", // Mudar para master's
+  "bachelor's",
+  "master's", 
   "degree in",
   "university degree",
   "msc",
@@ -19,8 +19,8 @@ const keywords = [
   "track record",
   "entry level",
   "entry-level",
-  "junior", // to remove
-  "senior", // to remove
+  "junior",
+  "senior",
   "mid-level",
   "degree in",
   "diploma",
@@ -34,6 +34,41 @@ const keywords = [
   "expertise in",
   "background in"
 ];
+
+const keywordsPT = [
+  "experiência",
+  "prática",              // equivalente a "hands-on"
+  "conhecimento",
+  "licenciatura",         // "bachelor's"
+  "mestrado",             // "master's"
+  "licenciado(a) em",
+  "mestrado em",
+  "grau académico",       // "university degree"
+  "formação",
+  "msc",
+  "bsc",
+  "phd",
+  "doutoramento",
+  "experiência profissional",
+  "experiência comprovada",  // "proven experience"
+  "capacidade comprovada",   // "proven ability"
+  "histórico",                // "track record"
+  "júnior",
+  "sénior",
+  "nível intermédio",         // "mid-level"
+  "diploma",
+  "certificação",
+  "certificado",
+  "proficiência em",
+  "familiaridade com",
+  "conhecimento sólido",      // "solid understanding"
+  "conhecimento profundo",    // "deep understanding"
+  "especialização em",        // "expertise in"
+  "Domínio",
+];
+
+const keywords = [...keywordsEN, ...keywordsPT];
+
 
 const observer = new MutationObserver(processText);
 
@@ -86,7 +121,7 @@ function getLinkedInDescriptionElement() {
 }
 
 function getIndeedDescriptionElement() {
-  // a preencher depois de inspecionares o Indeed
+  // a preencher
   return null;
 }
 
@@ -119,12 +154,12 @@ function getJobDescriptionText() {
 }
 
 
-// ===== Filtragem de experiência =====
+// ===== Filtragem de keywords =====
 
 function hasKeywordMatch(paragraph) {
   const lower = paragraph.toLowerCase();
   return keywords.some(keyword => {
-    const regex = new RegExp(`\\b${keyword}\\b`, 'i');
+    const regex = new RegExp(`\\b${keyword}`, 'i');
     return regex.test(lower);
   });
 }
@@ -132,8 +167,9 @@ function hasKeywordMatch(paragraph) {
 // ===== Filtragem de experiência =====
 
 function hasYearsMatch(paragraph) {
-  const regex = /\d+\+?\s*years?\s+(of\s+)?[\w\s-]{0,20}experience/i;
-  return regex.test(paragraph);
+  const regexEN = /\d+\+?\s*years?\s+(of|in)\s+/i;
+  const regexPT = /\d+\+?\s*anos?\s+(de|em)\s+/i;
+  return regexEN.test(paragraph) || regexPT.test(paragraph);
 }
 
 
@@ -167,8 +203,8 @@ function processText() {
           && !hasYearsMatch(trimmed);
     } )
 
-    console.log("anos de experiência (alta confiança):", yearsExpParagraphs);
-    console.log("outras menções relevantes:", expParagraphs);
+    console.log("anos de experiência: ", yearsExpParagraphs);
+    console.log("outras menções relevantes: ", expParagraphs);
 
     let summaryText = "";
 
