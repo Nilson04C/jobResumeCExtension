@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Minimal Manifest",
+  "name": "Job Description Resumer",
   "version": "1.0.1",
-  "description": "A basic example extension with only required keys",
+  "description": "An extension that quickly shows the requirements of  job description. Currently only works on linkedin",
   "icons": {
     "48": "images/icon-48.png"
   },
@@ -18,12 +18,5 @@
         "https://www.itjobs.pt/*"
       ]
     }
-  ],
-
-  "action": {
-    "default_icon": {},
-    "default_title": "Click Me",
-    "default_popup": "popup.html"
-  }
-    
+  ] 
 }
